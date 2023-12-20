@@ -1,5 +1,3 @@
-sales=3000
-print(sales)
 sales = 3000
 print(sales)
 Sales = 5000
