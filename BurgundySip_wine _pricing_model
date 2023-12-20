@@ -1,5 +1,5 @@
 #import data
-BurgundySip <- read.csv("C:\\Users\\sajee\\Desktop\\Data handling & Decision making\\Final project\\BurgundySip.csv",na.string = c("","N.V.","NA"));
+BurgundySip <- read.csv("C:\\Users\\----\\----\\---------\\----\\BurgundySip.csv",na.string = c("","N.V.","NA"));
 BurgundySip;
 
 #structure
