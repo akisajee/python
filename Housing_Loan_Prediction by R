@@ -1,5 +1,5 @@
 #import data
-HousingLoan <- read.csv("C:\\Users\\sajee\\Desktop\\Capstone Project\\new\\train_u6lujuX_CVtuZ9i.csv",na.string = c("","N.V.","NA"));
+HousingLoan <- read.csv("C:\\Users\\----\\Desktop\\-----\\new\\train_u6lujuX_CVtuZ9i.csv",na.string = c("","N.V.","NA"));
 HousingLoan;
 
 #structure
@@ -149,7 +149,7 @@ HousingLoan_Pre;
 
 #Download the prediction data
 
-write.csv(HousingLoan_Pre,"C:\\Users\\sajee\\Desktop\\Capstone Project\\new\\HousingLoan_Pre.csv")
+write.csv(HousingLoan_Pre,"C:\\Users\\----\\Desktop\\-------\\new\\HousingLoan_Pre.csv")
 
 
 
