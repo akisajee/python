@@ -1,0 +1,156 @@
+#import data
+HousingLoan <- read.csv("C:\\Users\\sajee\\Desktop\\Capstone Project\\new\\train_u6lujuX_CVtuZ9i.csv",na.string = c("","N.V.","NA"));
+HousingLoan;
+
+#structure
+str(HousingLoan);
+
+#transform variable type
+HousingLoan [c(1:6)] = lapply(HousingLoan [c(1:6)],FUN=factor)
+HousingLoan [c(10:13)] = lapply(HousingLoan [c(10:13)],FUN=factor)
+
+HousingLoan [c(7:9)] = lapply(HousingLoan [c(7:9)],as.numeric)
+
+#Check for Duplicates
+anyDuplicated(HousingLoan$Loan_ID)
+
+summary(HousingLoan)
+
+#Check for Outliers
+par(mar=c(3,3,2,1));
+boxplot(HousingLoan$ApplicantIncome,HousingLoan$CoapplicantIncome,HousingLoan$LoanAmount);
+
+#Outlier treatment
+
+#ApplicantIncome
+sumr_ApplicantIncome <- summary(HousingLoan$ApplicantIncome);sumr_ApplicantIncome;
+IQR_ApplicantIncome <- sumr_ApplicantIncome[5] - sumr_ApplicantIncome[2];IQR_ApplicantIncome;
+
+outPercent_ApplicantIncome <- sum(HousingLoan$ApplicantIncome < sumr_ApplicantIncome[2]-1.5*IQR_ApplicantIncome | HousingLoan$ApplicantIncome > sumr_ApplicantIncome[5]+1.5*IQR_ApplicantIncome,na.rm = T)/length(HousingLoan$ApplicantIncome);
+outPercent_ApplicantIncome;
+
+ApplicantIncome_trimed_mean <- mean(HousingLoan$ApplicantIncome, trim = outPercent_ApplicantIncome,na.rm = T); ApplicantIncome_trimed_mean;
+HousingLoan$ApplicantIncome[HousingLoan$ApplicantIncome < sumr_ApplicantIncome[2]-1.5*IQR_ApplicantIncome | HousingLoan$ApplicantIncome > sumr_ApplicantIncome[5]+1.5*IQR_ApplicantIncome] <- ApplicantIncome_trimed_mean
+
+summary(HousingLoan);
+
+#CoapplicantIncome
+sumr_CoapplicantIncome <- summary(HousingLoan$CoapplicantIncome);sumr_CoapplicantIncome;
+IQR_CoapplicantIncome <- sumr_CoapplicantIncome[5] - sumr_CoapplicantIncome[2];IQR_CoapplicantIncome;
+
+outPercent_CoapplicantIncome <- sum(HousingLoan$CoapplicantIncome < sumr_CoapplicantIncome[2]-1.5*IQR_CoapplicantIncome | HousingLoan$CoapplicantIncome > sumr_CoapplicantIncome[5]+1.5*IQR_CoapplicantIncome,na.rm = T)/length(HousingLoan$CoapplicantIncome);
+outPercent_CoapplicantIncome;
+
+CoapplicantIncome_trimed_mean <- mean(HousingLoan$CoapplicantIncome, trim = outPercent_CoapplicantIncome,na.rm = T); CoapplicantIncome_trimed_mean;
+HousingLoan$CoapplicantIncome[HousingLoan$CoapplicantIncome < sumr_CoapplicantIncome[2]-1.5*IQR_CoapplicantIncome | HousingLoan$CoapplicantIncome > sumr_CoapplicantIncome[5]+1.5*IQR_CoapplicantIncome] <- CoapplicantIncome_trimed_mean
+
+summary(HousingLoan);
+
+#LoanAmount
+sumr_LoanAmount <- summary(HousingLoan$LoanAmount);sumr_LoanAmount;
+IQR_LoanAmount <- sumr_LoanAmount[5] - sumr_LoanAmount[2];IQR_LoanAmount;
+
+outPercent_LoanAmount <- sum(HousingLoan$LoanAmount < sumr_LoanAmount[2]-1.5*IQR_LoanAmount | HousingLoan$LoanAmount > sumr_LoanAmount[5]+1.5*IQR_LoanAmount,na.rm = T)/length(HousingLoan$LoanAmount);
+outPercent_LoanAmount;
+
+LoanAmount_trimed_mean <- mean(HousingLoan$LoanAmount, trim = outPercent_LoanAmount,na.rm = T); LoanAmount_trimed_mean;
+HousingLoan$LoanAmount[HousingLoan$LoanAmount < sumr_LoanAmount[2]-1.5*IQR_LoanAmount | HousingLoan$LoanAmount > sumr_LoanAmount[5]+1.5*IQR_LoanAmount] <- LoanAmount_trimed_mean
+
+summary(HousingLoan);
+
+#Check after outlier treatment
+
+par(mar=c(3,3,2,1));
+boxplot(HousingLoan$ApplicantIncome,HousingLoan$CoapplicantIncome,HousingLoan$LoanAmount);
+
+#replacing missing values
+
+#Mode imputation
+#Categorical variable
+
+summary(HousingLoan$Gender); 
+HousingLoan$Gender[is.na(HousingLoan$Gender)]<-"Male";
+
+summary(HousingLoan$Married); 
+HousingLoan$Married[is.na(HousingLoan$Married)]<-"Yes";
+
+summary(HousingLoan$Self_Employed); 
+HousingLoan$Self_Employed[is.na(HousingLoan$Self_Employed)]<-"No";
+
+summary(HousingLoan$Credit_History); 
+HousingLoan$Credit_History[is.na(HousingLoan$Credit_History)]<-"1";
+
+summary(HousingLoan$Dependents); 
+HousingLoan$Dependents[is.na(HousingLoan$Dependents)]<-"0";
+
+summary(HousingLoan$Dependents); 
+HousingLoan$Dependents[is.na(HousingLoan$Dependents)]<-"0";
+
+summary(HousingLoan$Loan_Amount_Term); 
+HousingLoan$Loan_Amount_Term[is.na(HousingLoan$Loan_Amount_Term)]<-"360";
+
+summary(HousingLoan);
+`
+#Missing Value-Numeric variable
+#Mean
+
+mean_Loan <- aggregate(cbind(LoanAmount)~Gender+Married+Education+Self_Employed+Property_Area,
+                         data=HousingLoan,FUN=mean,na.rm=T)
+mean_Loan;
+
+names(mean_Loan)<-c("Gender","Married","Education","Self_Employed","Property_Area","LoanAmount_mean")
+mean_Loan;
+
+HousingLoan<-merge(HousingLoan,mean_Loan,by=c("Gender","Married","Education","Self_Employed","Property_Area"))
+
+HousingLoan$LoanAmount[is.na(HousingLoan$LoanAmount)]<-HousingLoan$LoanAmount_mean[is.na(HousingLoan$LoanAmount)];
+
+summary(HousingLoan);
+
+HousingLoan1<-HousingLoan[1:13];
+HousingLoan1;
+summary(HousingLoan1);
+
+#Regression Model
+
+#Train & Test data sets
+sampleTrain <- sort(sample(nrow(HousingLoan1), as.integer(nrow(HousingLoan1)*0.7)));
+sampleTrain ;
+
+train <- HousingLoan1[sampleTrain,]; train;
+test <- HousingLoan1[-sampleTrain,]; test;
+
+#fit logistic regression model with all the variables- Model 1
+
+modelone <- glm(Loan_Status~Gender+Married+Dependents+Education+Self_Employed+ApplicantIncome
+                +CoapplicantIncome+LoanAmount+Loan_Amount_Term+Credit_History+Property_Area, 
+                family="binomial", data=train)
+summary(modelone);
+
+pscl::pR2(modelone)["McFadden"]
+
+#fit logistic regression model with selected variables - Model 2
+
+modeltwo <- glm(Loan_Status~Married+LoanAmount+CoapplicantIncome+Credit_History+Property_Area, 
+                family="binomial", data=train)
+summary(modeltwo);
+
+pscl::pR2(modeltwo)["McFadden"]
+
+
+#prediction with model 2
+
+pred<-predict(modeltwo, test, type="response"); pred;
+
+HousingLoan_Pre<-test;
+
+HousingLoan_Pre$PR<-pred;
+HousingLoan_Pre;
+
+#Download the prediction data
+
+write.csv(HousingLoan_Pre,"C:\\Users\\sajee\\Desktop\\Capstone Project\\new\\HousingLoan_Pre.csv")
+
+
+
+
